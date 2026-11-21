@@ -24,8 +24,14 @@ import mutes
 load_dotenv()
 
 app = Flask(__name__)
-# A fresh clone has no .env yet, so fall back to a development key (set SECRET_KEY in .env for real use).
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY") or "dev-only-secret-key-change-me"
+
+# SECRET_KEY must be set in environment variables in production (Render dashboard)
+_secret = os.getenv("SECRET_KEY")
+if not _secret:
+    import warnings
+    warnings.warn("SECRET_KEY is not set! Using insecure fallback. Set it in Render environment variables.")
+app.config["SECRET_KEY"] = _secret or "dev-only-secret-key-change-me"
+
 app.config["MAX_CONTENT_LENGTH"] = 500 * 1024 * 1024  # all files of one post together
 app.teardown_appcontext(close_db)
 app.register_blueprint(auth_bp)
@@ -46,7 +52,9 @@ from live import live_bp
 app.register_blueprint(live_bp)
 from callsvc import calls_bp
 app.register_blueprint(calls_bp)
-socketio.init_app(app)
+
+# Use eventlet for async_mode so WebSockets and background tasks work on Render
+socketio.init_app(app, async_mode="eventlet", cors_allowed_origins="*")
 
 import servers.chat  # registers the server chat events
 import dms.chat  # registers the DM events
@@ -71,7 +79,10 @@ def start_companion_worker():
 def inject_user():
     user = current_user()
     badges = unread.all_counts(user["id"]) if user else None
+    # Note: giphy_key is intentionally passed only to templates that need it.
+    # Avoid exposing API keys in HTML source for public pages.
     return {"user": user, "badges": badges, "giphy_key": os.getenv("GIPHY_API_KEY", "")}
+
 
 @app.errorhandler(413)
 def too_large(error):
@@ -79,6 +90,8 @@ def too_large(error):
     return redirect(request.referrer or url_for("feed.index"))
 
 
+# --- Init DB on startup (runs every time gunicorn/eventlet starts the app) ---
+init_db()
+
 if __name__ == "__main__":
-    init_db()  # creates the database on a fresh clone (safe to run every time)
-    socketio.run(app, host=os.getenv("HOST", "127.0.0.1"), port=int(os.getenv("PORT", "5000")), debug=True)
+    socketio.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "5000")), debug=False)

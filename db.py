@@ -8,9 +8,12 @@ import re
 from flask import g
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_DIR = os.path.join(BASE_DIR, "db")
+# On Render: set DB_DIR env var to the mounted persistent disk path (e.g. /var/data)
+# Locally: defaults to the db/ folder inside the project
+_env_db_dir = os.getenv("DB_DIR")
+DB_DIR = _env_db_dir if _env_db_dir else os.path.join(BASE_DIR, "db")
 DB_PATH = os.path.join(DB_DIR, "aisponsor.db")
-SCHEMA_PATH = os.path.join(DB_DIR, "schema.sql")
+SCHEMA_PATH = os.path.join(BASE_DIR, "db", "schema.sql")
 
 def get_db():
     if "db" not in g:

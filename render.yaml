@@ -1,0 +1,18 @@
+# Render deployment config — https://render.com/docs/render-yaml-reference
+services:
+  - type: web
+    name: zyvorasponsing
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --worker-class eventlet -w 1 --bind 0.0.0.0:$PORT app:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true          # Render auto-generates a secure random value
+      - key: GIPHY_API_KEY
+        sync: false                  # You set this manually in the Render dashboard
+      - key: DB_DIR
+        value: /var/data             # Points to the persistent disk below
+    disk:
+      name: zyvoradb
+      mountPath: /var/data           # SQLite DB and uploads are saved here (survives redeploys)
+      sizeGB: 1                      # Free tier: 1 GB

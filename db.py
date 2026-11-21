@@ -8,10 +8,30 @@ import re
 from flask import g
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# On Render: set DB_DIR env var to the mounted persistent disk path (e.g. /var/data)
-# Locally: defaults to the db/ folder inside the project
-_env_db_dir = os.getenv("DB_DIR")
-DB_DIR = _env_db_dir if _env_db_dir else os.path.join(BASE_DIR, "db")
+
+def _get_safe_db_dir():
+    # If DB_DIR is set, try it; if permission denied or invalid, fallback safely
+    env_dir = os.getenv("DB_DIR")
+    if env_dir:
+        try:
+            os.makedirs(env_dir, exist_ok=True)
+            test_file = os.path.join(env_dir, ".test")
+            with open(test_file, "w") as f:
+                f.write("1")
+            os.remove(test_file)
+            return env_dir
+        except Exception:
+            pass
+    # Default to writable local db folder inside the project
+    local_dir = os.path.join(BASE_DIR, "db")
+    try:
+        os.makedirs(local_dir, exist_ok=True)
+    except Exception:
+        # Fallback to /tmp which is always writable in Linux/Render containers
+        local_dir = "/tmp"
+    return local_dir
+
+DB_DIR = _get_safe_db_dir()
 DB_PATH = os.path.join(DB_DIR, "aisponsor.db")
 SCHEMA_PATH = os.path.join(BASE_DIR, "db", "schema.sql")
 

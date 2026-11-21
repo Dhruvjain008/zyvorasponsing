@@ -6,4 +6,5 @@ flask-socketio
 simple-websocket
 Pillow
 gunicorn
-eventlet
+gevent
+gevent-websocket

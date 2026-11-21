@@ -54,7 +54,7 @@ from callsvc import calls_bp
 app.register_blueprint(calls_bp)
 
 # Use eventlet for async_mode so WebSockets and background tasks work on Render
-socketio.init_app(app, async_mode="eventlet", cors_allowed_origins="*")
+socketio.init_app(app, async_mode="gevent", cors_allowed_origins="*")
 
 import servers.chat  # registers the server chat events
 import dms.chat  # registers the DM events

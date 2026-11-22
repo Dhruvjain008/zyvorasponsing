@@ -90,8 +90,13 @@ def too_large(error):
     return redirect(request.referrer or url_for("feed.index"))
 
 
-# --- Init DB on startup (runs every time gunicorn/eventlet starts the app) ---
+# --- Init DB and seed demo data on startup if fresh ---
 init_db()
+try:
+    import seed_demo
+    seed_demo.ensure_demo_data()
+except Exception as _e:
+    app.logger.warning("Auto demo seed note: %s", _e)
 
 if __name__ == "__main__":
     socketio.run(app, host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "5000")), debug=False)

@@ -12,23 +12,23 @@
   display: flex;
   align-items: center;      /* vertically centre the form */
   padding: 3rem 0;
-  background:
-    linear-gradient(100deg, rgba(10, 15, 30, 0.85) 0%, rgba(10, 15, 30, 0.55) 55%, rgba(10, 15, 30, 0.35) 100%),
-    url("../img/auth-bg.jpg") center / cover no-repeat;
+  background: radial-gradient(ellipse at 50% 20%, #1e293b 0%, #0f172a 100%);
 }
 
 .auth-tagline {
   max-width: 32rem;
-  opacity: 0.85;
+  color: #94a3b8;
+  font-size: 1.15rem;
+  line-height: 1.6;
 }
 
-/* The form card: frosted white panel */
+/* The form card: clean solid card */
 .auth-card {
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(6px);
-  border-radius: 1rem;
+  background: #ffffff;
+  border-radius: 14px;
   padding: 2.25rem 2rem;
-  box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
 }
 
 .auth-card .form-control {
@@ -47,47 +47,30 @@
 
 /* ---------- Navbar ---------- */
 
-/* Aurora: a wide gradient that slowly flows sideways.
-   It loops back to its first colour so the animation never "jumps". */
 .app-navbar {
-  background: linear-gradient(90deg,
-    #4c1d95, #6d28d9, #a21caf, #db2777, #ea580c, #db2777, #a21caf, #6d28d9, #4c1d95);
-  background-size: 300% 100%;
-  animation: aurora 24s linear infinite;
-  box-shadow: 0 4px 20px rgba(109, 40, 217, 0.3);
+  background: #0f172a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 0.65rem 1.25rem;
 }
 .app-navbar .navbar-brand {
   font-weight: 700;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+  letter-spacing: -0.01em;
+  color: #fafafa;
 }
 
-@keyframes aurora {
-  from { background-position: 0% 50%; }
-  to   { background-position: 300% 50%; }
-}
-
-/* Dashboards: brighter aurora with a soft glow spilling onto the page */
+/* Dashboards */
 .dashboard-page .app-navbar {
-  animation-duration: 16s;
-  box-shadow:
-    0 4px 24px rgba(219, 39, 119, 0.35),
-    0 10px 50px rgba(124, 58, 237, 0.25);
+  background: #0f172a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Login / register: dark see-through aurora that melts into the photo */
+/* Login / register */
 .auth-page .app-navbar {
-  background:
-    linear-gradient(rgba(10, 15, 30, 0.6), rgba(10, 15, 30, 0.6)),
-    linear-gradient(90deg,
-      #4c1d95, #6d28d9, #a21caf, #db2777, #ea580c, #db2777, #a21caf, #6d28d9, #4c1d95);
-  background-size: 100% 100%, 300% 100%;
-  animation-name: aurora-dim;
+  background: #0f172a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: none;
-}
-
-@keyframes aurora-dim {
-  from { background-position: 0 0, 0% 50%; }
-  to   { background-position: 0 0, 300% 50%; }
 }
 
 /* "Dashboard" link: plain text that glows softly on hover */
@@ -107,32 +90,27 @@
   color: #fff;
   padding: 0.25rem 0.9rem 0.25rem 0.25rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-/* Avatar with a spinning rainbow ring */
+/* Clean, modern avatar */
 .avatar {
   position: relative;
-  isolation: isolate;
-  width: 2.1rem;
-  height: 2.1rem;
+  width: 2.2rem;
+  height: 2.2rem;
   border-radius: 50%;
   display: grid;
   place-items: center;
   font-weight: 700;
-  background: linear-gradient(135deg, #a78bfa, #ec4899, #fb923c);
+  background: #1e293b;
+  color: #f8fafc;
+  border: 2px solid rgba(255, 255, 255, 0.12);
 }
 
 .avatar::before {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  z-index: -1;
-  border-radius: 50%;
-  background: conic-gradient(from var(--angle), #a78bfa, #ec4899, #fb923c, #38bdf8, #a78bfa);
-  filter: blur(2px);
-  animation: spin-border 4s linear infinite;
+  display: none !important;
+}
 }
 
 /* Respect users who turn off animations in their OS settings */
